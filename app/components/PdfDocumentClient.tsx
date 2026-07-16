@@ -25,7 +25,7 @@ export default function PdfDocumentClient({ data, settings, viewMode }: Props) {
     <PDFDownloadLink
       document={<SuratContent data={data} settings={settings} />}
       fileName={fileName}
-      className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 inline-block"
+      className="bg-[#57534e] text-white px-6 py-2 rounded-md hover:bg-[#44403c] inline-block"
     >
       {({ loading }) => (loading ? 'Memuat PDF...' : '📥 Download PDF')}
     </PDFDownloadLink>
