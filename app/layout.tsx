@@ -1,18 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { verifySession } from "@/app/lib/session";
 import { headers } from "next/headers";
 import Sidebar from "./components/Sidebar";
 import TopBar from "./components/TopBar";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -34,9 +29,9 @@ export default async function RootLayout({
   return (
     <html
       lang="id"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-gray-50/50">
+      <body className="min-h-full bg-[#fafaf9]">
         {session && !isPrintPage ? (
           <div className="flex h-screen overflow-hidden">
             <Sidebar role={session.role} />
