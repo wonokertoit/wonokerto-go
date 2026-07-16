@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/app/lib/db';
-import { applications, settings, users } from '@/app/lib/schema';
+import { applications, settings, users, notifications } from '@/app/lib/schema';
 import { ApplicationFormSchema, SettingsFormSchema, FormState } from '@/app/lib/definitions';
 import { verifySession } from '@/app/lib/session';
 import { eq, desc, and } from 'drizzle-orm';
@@ -62,6 +62,14 @@ export async function createApplication(state: FormState, formData: FormData) {
       type: data.type,
     });
   }
+
+  // Buat notifikasi untuk warga
+  await db.insert(notifications).values({
+    userId: session.userId,
+    applicationId: result[0].id,
+    title: `Pengajuan ${data.type} berhasil dibuat`,
+    message: `Pengajuan surat ${data.type} atas nama ${data.nama} telah berhasil diajukan dan menunggu verifikasi admin.`,
+  });
 
   revalidatePath('/riwayat');
   redirect('/riwayat');
@@ -138,6 +146,14 @@ export async function approveApplication(id: string, nomorSurat: string) {
         type: appData.type,
         status: 'DISETUJUI',
       });
+
+      // Notifikasi untuk warga
+      await db.insert(notifications).values({
+        userId: appData.userId,
+        applicationId: appData.id,
+        title: `Pengajuan ${appData.type} disetujui`,
+        message: `Pengajuan surat ${appData.type} Anda telah disetujui dengan nomor surat ${nomorSurat}. Silakan datang ke Balai Desa untuk mengambil surat.`,
+      });
     }
   }
 
@@ -171,6 +187,14 @@ export async function rejectApplication(id: string, alasan: string) {
         nama: appData.nama,
         type: appData.type,
         status: 'DITOLAK',
+      });
+
+      // Notifikasi untuk warga
+      await db.insert(notifications).values({
+        userId: appData.userId,
+        applicationId: appData.id,
+        title: `Pengajuan ${appData.type} ditolak`,
+        message: `Mohon maaf, pengajuan surat ${appData.type} Anda ditolak dengan alasan: ${alasan}. Silakan hubungi admin desa untuk informasi lebih lanjut.`,
       });
     }
   }
@@ -206,11 +230,57 @@ export async function completeApplication(id: string) {
         type: appData.type,
         status: 'SELESAI',
       });
+
+      // Notifikasi untuk warga
+      await db.insert(notifications).values({
+        userId: appData.userId,
+        applicationId: appData.id,
+        title: `Pengajuan ${appData.type} selesai`,
+        message: `Pengajuan surat ${appData.type} Anda telah selesai diproses. Surat sudah siap diambil di Balai Desa Wonokerto.`,
+      });
     }
   }
 
   revalidatePath('/admin/pengajuan');
   revalidatePath(`/admin/pengajuan/${id}`);
+  return { success: true };
+}
+
+export async function getNotifications() {
+  const session = await verifySession();
+  if (!session) return [];
+
+  const data = await db
+    .select()
+    .from(notifications)
+    .where(eq(notifications.userId, session.userId))
+    .orderBy(desc(notifications.createdAt))
+    .limit(20);
+
+  return data;
+}
+
+export async function markNotificationAsRead(id: string) {
+  const session = await verifySession();
+  if (!session) return { message: 'Unauthorized.' };
+
+  await db
+    .update(notifications)
+    .set({ read: 'true' })
+    .where(eq(notifications.id, id));
+
+  return { success: true };
+}
+
+export async function markAllNotificationsAsRead() {
+  const session = await verifySession();
+  if (!session) return { message: 'Unauthorized.' };
+
+  await db
+    .update(notifications)
+    .set({ read: 'true' })
+    .where(eq(notifications.userId, session.userId));
+
   return { success: true };
 }
 

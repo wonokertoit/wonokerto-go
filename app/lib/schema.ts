@@ -63,6 +63,19 @@ export const applications = pgTable("applications", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const notifications = pgTable("notifications", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  applicationId: uuid("application_id")
+    .references(() => applications.id, { onDelete: "cascade" }),
+  title: varchar("title", { length: 255 }).notNull(),
+  message: text("message").notNull(),
+  read: varchar("read", { length: 10 }).notNull().default("false"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const settings = pgTable("settings", {
   id: varchar("id", { length: 50 }).primaryKey().default("default"),
   namaKepalaDesa: varchar("nama_kepala_desa", { length: 255 }).notNull().default("SUYANTO"),

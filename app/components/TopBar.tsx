@@ -1,18 +1,30 @@
 'use client';
 
-import { useState } from "react";
-import { Bell, Search, X, FileText, FileCheck, Clock, CheckCircle } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Bell, Search, X, FileText, FileCheck, Clock, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead } from "@/app/actions/applications";
 
 interface TopBarProps {
   role: string;
   email: string;
 }
 
+interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  read: string;
+  createdAt: Date;
+  applicationId: string | null;
+}
+
 export default function TopBar({ role, email }: TopBarProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loadingNotif, setLoadingNotif] = useState(false);
 
   const menuItems = role === "admin" 
     ? [
@@ -31,13 +43,56 @@ export default function TopBar({ role, email }: TopBarProps) {
     item.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const notifications = [
-    { id: 1, title: "Pengajuan SKU baru", desc: "Pengajuan menunggu verifikasi", time: "2 menit yang lalu", read: false },
-    { id: 2, title: "Status diperbarui", desc: "Pengajuan Anda telah disetujui", time: "1 jam yang lalu", read: false },
-    { id: 3, title: "Pengajuan selesai", desc: "Surat telah selesai diproses", time: "3 jam yang lalu", read: true },
-  ];
+  const unreadCount = notifications.filter(n => n.read === "false").length;
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const fetchNotifications = useCallback(async () => {
+    setLoadingNotif(true);
+    try {
+      const data = await getNotifications();
+      setNotifications(data);
+    } catch (err) {
+      console.error("Failed to fetch notifications", err);
+    } finally {
+      setLoadingNotif(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (notifOpen) {
+      fetchNotifications();
+    }
+  }, [notifOpen, fetchNotifications]);
+
+  // Poll every 30 seconds when notif panel is closed
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!notifOpen) {
+        fetchNotifications();
+      }
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [notifOpen, fetchNotifications]);
+
+  const handleMarkAsRead = async (id: string) => {
+    await markNotificationAsRead(id);
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: "true" } : n));
+  };
+
+  const handleMarkAllAsRead = async () => {
+    await markAllNotificationsAsRead();
+    setNotifications(prev => prev.map(n => ({ ...n, read: "true" })));
+  };
+
+  const formatTime = (date: Date) => {
+    const d = new Date(date);
+    const now = new Date();
+    const diff = Math.floor((now.getTime() - d.getTime()) / 1000);
+    
+    if (diff < 60) return "Baru saja";
+    if (diff < 3600) return `${Math.floor(diff / 60)} menit yang lalu`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} jam yang lalu`;
+    return d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
+  };
 
   return (
     <>
@@ -61,7 +116,9 @@ export default function TopBar({ role, email }: TopBarProps) {
             >
               <Bell size={18} className="text-[#78716c]" />
               {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 w-2 h-2 bg-[#dc2626] rounded-full border border-white"></span>
+                <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-[#dc2626] text-white text-[10px] font-bold rounded-full flex items-center justify-center border border-white">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
               )}
             </button>
 
@@ -74,38 +131,56 @@ export default function TopBar({ role, email }: TopBarProps) {
                 <div className="absolute right-0 top-10 w-80 bg-white rounded-xl border border-[#e7e5e4] shadow-lg z-50 overflow-hidden">
                   <div className="p-3 border-b border-[#e7e5e4] flex items-center justify-between">
                     <h3 className="font-semibold text-sm text-[#1c1917]">Notifikasi</h3>
-                    <button 
-                      onClick={() => setNotifOpen(false)}
-                      className="p-1 hover:bg-[#fafaf9] rounded transition-colors"
-                    >
-                      <X size={14} className="text-[#78716c]" />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      {unreadCount > 0 && (
+                        <button
+                          onClick={handleMarkAllAsRead}
+                          className="text-[10px] text-[#78716c] hover:text-[#57534e] px-2 py-1 hover:bg-[#fafaf9] rounded transition-colors"
+                        >
+                          Tandai dibaca
+                        </button>
+                      )}
+                      <button 
+                        onClick={() => setNotifOpen(false)}
+                        className="p-1 hover:bg-[#fafaf9] rounded transition-colors"
+                      >
+                        <X size={14} className="text-[#78716c]" />
+                      </button>
+                    </div>
                   </div>
                   <div className="max-h-80 overflow-y-auto">
-                    {notifications.map((notif) => (
-                      <div 
-                        key={notif.id}
-                        className={`p-3 border-b border-[#f5f5f4] hover:bg-[#fafaf9] transition-colors cursor-pointer ${
-                          !notif.read ? "bg-[#fafaf9]" : ""
-                        }`}
-                      >
-                        <div className="flex items-start gap-2">
-                          <div className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${
-                            !notif.read ? "bg-[#dc2626]" : "bg-[#d6d3d1]"
-                          }`} />
-                          <div className="flex-1">
-                            <p className="text-sm font-medium text-[#1c1917]">{notif.title}</p>
-                            <p className="text-xs text-[#78716c] mt-0.5">{notif.desc}</p>
-                            <p className="text-[10px] text-[#a8a29e] mt-1">{notif.time}</p>
+                    {loadingNotif ? (
+                      <div className="p-6 flex items-center justify-center">
+                        <Loader2 size={16} className="text-[#a8a29e] animate-spin" />
+                      </div>
+                    ) : notifications.length > 0 ? (
+                      notifications.map((notif) => (
+                        <div 
+                          key={notif.id}
+                          onClick={() => {
+                            if (notif.read === "false") handleMarkAsRead(notif.id);
+                          }}
+                          className={`p-3 border-b border-[#f5f5f4] hover:bg-[#fafaf9] transition-colors cursor-pointer ${
+                            notif.read === "false" ? "bg-[#fafaf9]" : ""
+                          }`}
+                        >
+                          <div className="flex items-start gap-2">
+                            <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${
+                              notif.read === "false" ? "bg-[#dc2626]" : "bg-[#d6d3d1]"
+                            }`} />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-[#1c1917] truncate">{notif.title}</p>
+                              <p className="text-xs text-[#78716c] mt-0.5 line-clamp-2">{notif.message}</p>
+                              <p className="text-[10px] text-[#a8a29e] mt-1">{formatTime(notif.createdAt)}</p>
+                            </div>
                           </div>
                         </div>
+                      ))
+                    ) : (
+                      <div className="p-6 text-center">
+                        <p className="text-sm text-[#a8a29e]">Belum ada notifikasi</p>
                       </div>
-                    ))}
-                  </div>
-                  <div className="p-2 border-t border-[#e7e5e4]">
-                    <button className="w-full text-center text-xs text-[#78716c] hover:text-[#57534e] py-1 transition-colors">
-                      Tandai semua dibaca
-                    </button>
+                    )}
                   </div>
                 </div>
               </>

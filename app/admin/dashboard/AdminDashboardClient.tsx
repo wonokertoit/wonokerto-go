@@ -16,24 +16,24 @@ interface AdminDashboardClientProps {
 
 export default function AdminDashboardClient({ stats }: AdminDashboardClientProps) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div>
         <motion.h1
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-2xl font-bold text-gray-900"
+          className="text-2xl font-bold text-[#1c1917]"
         >
           Dashboard Admin
         </motion.h1>
-        <p className="text-gray-500 mt-1">Kelola pengajuan surat dari warga.</p>
+        <p className="text-[#a8a29e] mt-1 text-sm">Kelola pengajuan surat dari warga.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <StatCard label="Total" value={stats?.total ?? 0} icon={FileText} color="blue" delay={0} />
-        <StatCard label="Diajukan" value={stats?.diajukan ?? 0} icon={FileClock} color="yellow" delay={0.1} />
-        <StatCard label="Disetujui" value={stats?.disetujui ?? 0} icon={FileCheck} color="emerald" delay={0.2} />
-        <StatCard label="Ditolak" value={stats?.ditolak ?? 0} icon={XCircle} color="red" delay={0.3} />
-        <StatCard label="Selesai" value={stats?.selesai ?? 0} icon={Clock} color="purple" delay={0.4} />
+        <StatCard label="Total" value={stats?.total ?? 0} icon={FileText} delay={0} />
+        <StatCard label="Diajukan" value={stats?.diajukan ?? 0} icon={FileClock} delay={0.1} />
+        <StatCard label="Disetujui" value={stats?.disetujui ?? 0} icon={FileCheck} delay={0.2} />
+        <StatCard label="Ditolak" value={stats?.ditolak ?? 0} icon={XCircle} delay={0.3} />
+        <StatCard label="Selesai" value={stats?.selesai ?? 0} icon={Clock} delay={0.4} />
       </div>
 
       <motion.div
@@ -44,37 +44,37 @@ export default function AdminDashboardClient({ stats }: AdminDashboardClientProp
       >
         <Link
           href="/admin/pengajuan"
-          className="group bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all"
+          className="group bg-white p-5 rounded-xl border border-[#e7e5e4] hover:border-[#d6d3d1] hover:shadow-md transition-all"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
-                <Users className="text-blue-600" size={24} />
+              <div className="w-10 h-10 bg-[#fafaf9] rounded-lg flex items-center justify-center border border-[#e7e5e4]">
+                <Users className="text-[#78716c]" size={20} />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">Kelola Pengajuan</h3>
-                <p className="text-sm text-gray-500">Review dan proses semua pengajuan</p>
+                <h3 className="font-semibold text-[#1c1917] text-sm">Kelola Pengajuan</h3>
+                <p className="text-xs text-[#a8a29e]">Review dan proses semua pengajuan</p>
               </div>
             </div>
-            <ArrowRight className="text-gray-300 group-hover:text-blue-500 transition-colors" size={20} />
+            <ArrowRight className="text-[#d6d3d1] group-hover:text-[#78716c] transition-colors" size={18} />
           </div>
         </Link>
 
         <Link
           href="/admin/settings"
-          className="group bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all"
+          className="group bg-white p-5 rounded-xl border border-[#e7e5e4] hover:border-[#d6d3d1] hover:shadow-md transition-all"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center">
-                <Settings className="text-gray-600" size={24} />
+              <div className="w-10 h-10 bg-[#fafaf9] rounded-lg flex items-center justify-center border border-[#e7e5e4]">
+                <Settings className="text-[#78716c]" size={20} />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">Pengaturan Desa</h3>
-                <p className="text-sm text-gray-500">Atur kop surat dan informasi desa</p>
+                <h3 className="font-semibold text-[#1c1917] text-sm">Pengaturan Desa</h3>
+                <p className="text-xs text-[#a8a29e]">Atur kop surat dan informasi desa</p>
               </div>
             </div>
-            <ArrowRight className="text-gray-300 group-hover:text-gray-500 transition-colors" size={20} />
+            <ArrowRight className="text-[#d6d3d1] group-hover:text-[#78716c] transition-colors" size={18} />
           </div>
         </Link>
       </motion.div>
@@ -82,36 +82,28 @@ export default function AdminDashboardClient({ stats }: AdminDashboardClientProp
   );
 }
 
-function StatCard({ label, value, icon: Icon, color, delay = 0 }: {
+function StatCard({ label, value, icon: Icon, delay = 0 }: {
   label: string;
   value: number;
   icon: React.ComponentType<{ size?: number }>;
-  color: string;
   delay?: number;
 }) {
-  const colorMap: Record<string, string> = {
-    blue: "bg-blue-50 text-blue-600",
-    emerald: "bg-emerald-50 text-emerald-600",
-    yellow: "bg-yellow-50 text-yellow-600",
-    red: "bg-red-50 text-red-600",
-    purple: "bg-purple-50 text-purple-600",
-    gray: "bg-gray-50 text-gray-600",
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.4 }}
-      className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100"
+      className="bg-white p-4 rounded-xl border border-[#e7e5e4]"
     >
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-gray-500 font-medium">{label}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
+          <p className="text-xs text-[#a8a29e] font-medium">{label}</p>
+          <p className="text-xl font-bold text-[#1c1917] mt-1">{value}</p>
         </div>
-        <div className={`w-10 h-10 ${colorMap[color]} rounded-xl flex items-center justify-center`}>
-          <Icon size={20} />
+        <div className="w-9 h-9 bg-[#fafaf9] rounded-lg flex items-center justify-center border border-[#e7e5e4]">
+          <div className="text-[#78716c]">
+            <Icon size={18} />
+          </div>
         </div>
       </div>
     </motion.div>
