@@ -16,7 +16,11 @@ export const metadata: Metadata = {
   title: "SIDEWO",
   description: "Pengajuan Surat dan Aduan Desa Wonokerto, Kabupaten Wonogiri",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
   },
 };
 
