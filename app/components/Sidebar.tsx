@@ -66,8 +66,8 @@ export default function Sidebar({ role }: SidebarProps) {
             className="w-10 h-10 object-contain"
           />
           <div>
-            <h1 className="font-bold text-[#1c1917] text-sm leading-tight">Desa Wonokerto</h1>
-            <p className="text-[10px] text-[#a8a29e] leading-tight">Kabupaten Wonogiri</p>
+            <h1 className="font-bold text-[#1c1917] text-sm leading-tight">SIDEWO</h1>
+            <p className="text-[10px] text-[#a8a29e] leading-tight">Desa Wonokerto, Kabupaten Wonogiri</p>
           </div>
         </div>
 

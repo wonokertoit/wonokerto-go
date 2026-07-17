@@ -61,9 +61,11 @@ export default function HomePage() {
               Desa Wonokerto, Kecamatan Wonogiri
             </div>
             <h1 className="text-4xl lg:text-6xl font-bold text-[#1c1917] mb-6 leading-tight">
-              Sistem Informasi{" "}
-              <span className="text-[#57534e]">Desa Wonokerto</span>
+              SIDEWO
             </h1>
+            <p className="text-lg text-[#57534e] mb-6">
+              Sistem Informasi Desa Wonokerto
+            </p>
             <p className="text-lg text-[#78716c] mb-10 leading-relaxed">
               Layanan pengajuan surat online untuk Surat Keterangan Usaha (SKU) dan Surat Pengantar SKCK.
               Proses cepat, transparan, dan terintegrasi.

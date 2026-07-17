@@ -5,6 +5,7 @@ import { Save } from "lucide-react";
 
 interface Settings {
   namaKepalaDesa: string;
+  kopSurat: string;
   jabatan: string;
   namaDesa: string;
   kodeDesa: string;
@@ -52,6 +53,13 @@ export default function SettingsClient({
             <div>
               <label className="block text-sm font-medium text-[#44403c] mb-1.5">Jabatan</label>
               <input name="jabatan" defaultValue={settings.jabatan} required className={inputClass} />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-[#44403c] mb-1.5">Kop Surat</label>
+              <select name="kopSurat" defaultValue={settings.kopSurat} required className={inputClass}>
+                <option value="KEPALA DESA WONOKERTO">KEPALA DESA WONOKERTO</option>
+                <option value="SEKRETARIAT DESA WONOKERTO">SEKRETARIAT DESA WONOKERTO</option>
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-[#44403c] mb-1.5">Nama Desa</label>

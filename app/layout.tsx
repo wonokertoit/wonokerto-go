@@ -5,6 +5,7 @@ import { verifySession } from "@/app/lib/session";
 import { headers } from "next/headers";
 import Sidebar from "./components/Sidebar";
 import TopBar from "./components/TopBar";
+import ToastProvider from "./components/ToastProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -12,8 +13,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Sistem Informasi Desa Wonokerto",
-  description: "Pengajuan Surat Desa Wonokerto",
+  title: "SIDEWO",
+  description: "Pengajuan Surat dan Aduan Desa Wonokerto, Kabupaten Wonogiri",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default async function RootLayout({
@@ -32,6 +36,7 @@ export default async function RootLayout({
       className={`${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-[#fafaf9]">
+        <ToastProvider />
         {session && !isPrintPage ? (
           <div className="flex h-screen overflow-hidden">
             <Sidebar role={session.role} />

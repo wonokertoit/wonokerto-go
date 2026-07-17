@@ -29,6 +29,7 @@ export interface PdfData {
 
 export interface SettingsData {
   namaKepalaDesa: string;
+  kopSurat: string;
   jabatan: string;
   kodeDesa: string;
   namaDesa: string;
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingLeft: 50,
     paddingRight: 50,
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Times-Roman',
     lineHeight: 1.15,
   },
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
   },
   headerLineKabKec: {
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Times-Bold',
     textTransform: 'uppercase',
     letterSpacing: 0.3,
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
   },
   headerLineJabatan: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 12,
     fontFamily: 'Times-Bold',
     textTransform: 'uppercase',
     letterSpacing: 0.3,
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Times-Bold',
     textDecoration: 'underline',
     textTransform: 'uppercase',
@@ -228,7 +229,7 @@ export function SuratContent({ data, settings }: Props) {
       : 'Orang tersebut di atas benar penduduk kami sesuai data yang ada dan berkelakuan baik.');
 
   const berlaku = data.tanggalBerlakuMulai && data.tanggalBerlakuSampai
-    ? `${formatDateShort(data.tanggalBerlakuMulai)} s/d ${formatDateShort(data.tanggalBerlakuSampai)}`
+    ? `${formatDate(data.tanggalBerlakuMulai)} s/d ${formatDate(data.tanggalBerlakuSampai)}`
     : formatDate(data.tanggalPengajuan);
 
   return (
@@ -245,7 +246,7 @@ export function SuratContent({ data, settings }: Props) {
           <View style={styles.headerTextBlock}>
             <Text style={styles.headerLineKabKec}>PEMERINTAH KABUPATEN {settings.kabupaten.toUpperCase()}</Text>
             <Text style={styles.headerLineKabKec}>KECAMATAN {settings.kecamatan.toUpperCase()}</Text>
-            <Text style={styles.headerLineJabatan}>{settings.jabatan.toUpperCase()}</Text>
+            <Text style={styles.headerLineJabatan}>{settings.kopSurat.toUpperCase()}</Text>
             <Text style={styles.contactRow}>{settings.alamat} KODE POS {settings.kodePos}</Text>
             <Text style={styles.contactRow}>Telp. {settings.telepon || '-'}   Faxs. {settings.fax || '-'}</Text>
             <Text style={styles.contactRowBold}>

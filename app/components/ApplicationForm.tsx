@@ -147,12 +147,12 @@ export default function ApplicationForm({ type }: ApplicationFormProps) {
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#57534e] mb-1">NIK</label>
-                <input name="nik" required maxLength={20} className={inputClass} placeholder="16 digit NIK" />
+                <input name="nik" required minLength={16} maxLength={16} className={inputClass} placeholder="16 digit NIK" />
                 {state?.errors?.nik && <p className="text-[#dc2626] text-xs mt-1.5">{state.errors.nik[0]}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#57534e] mb-1">No. KK</label>
-                <input name="kk" required className={inputClass} placeholder="Nomor Kartu Keluarga" />
+                <input name="kk" required minLength={16} maxLength={16} className={inputClass} placeholder="16 digit KK" />
                 {state?.errors?.kk && <p className="text-[#dc2626] text-xs mt-1.5">{state.errors.kk[0]}</p>}
               </div>
             </div>

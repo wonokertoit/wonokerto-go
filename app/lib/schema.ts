@@ -76,9 +76,20 @@ export const notifications = pgTable("notifications", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const aduan = pgTable("aduan", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+  nama: varchar("nama", { length: 255 }),
+  kategori: varchar("kategori", { length: 50 }).notNull(),
+  subjek: varchar("subjek", { length: 255 }).notNull(),
+  pesan: text("pesan").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const settings = pgTable("settings", {
   id: varchar("id", { length: 50 }).primaryKey().default("default"),
   namaKepalaDesa: varchar("nama_kepala_desa", { length: 255 }).notNull().default("SUYANTO"),
+  kopSurat: varchar("kop_surat", { length: 255 }).notNull().default("KEPALA DESA WONOKERTO"),
   jabatan: varchar("jabatan", { length: 255 }).notNull().default("KEPALA DESA WONOKERTO"),
   kodeDesa: varchar("kode_desa", { length: 50 }).notNull().default("12122013"),
   namaDesa: varchar("nama_desa", { length: 100 }).notNull().default("Wonokerto"),

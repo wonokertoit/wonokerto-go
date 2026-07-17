@@ -29,15 +29,23 @@ export const ApplicationFormSchema = z.object({
   kecamatan: z.string().min(1, { message: "Kecamatan wajib diisi." }).trim(),
   kabupaten: z.string().min(1, { message: "Kabupaten wajib diisi." }).trim(),
   provinsi: z.string().min(1, { message: "Provinsi wajib diisi." }).trim(),
-  nik: z.string().min(1, { message: "NIK wajib diisi." }).trim(),
-  kk: z.string().min(1, { message: "No KK wajib diisi." }).trim(),
+  nik: z.string().length(16, { message: "NIK harus tepat 16 karakter." }).trim(),
+  kk: z.string().length(16, { message: "No KK harus tepat 16 karakter." }).trim(),
   keperluan: z.string().min(1, { message: "Keperluan wajib diisi." }).trim(),
   detailUsaha: z.string().optional(),
   keteranganLain: z.string().optional(),
 });
 
+export const AduanFormSchema = z.object({
+  nama: z.string().optional(),
+  kategori: z.string().min(1, { message: "Kategori wajib dipilih." }),
+  subjek: z.string().min(1, { message: "Subjek wajib diisi." }).trim(),
+  pesan: z.string().min(1, { message: "Pesan wajib diisi." }).trim(),
+});
+
 export const SettingsFormSchema = z.object({
   namaKepalaDesa: z.string().min(1),
+  kopSurat: z.string().min(1),
   jabatan: z.string().min(1),
   kodeDesa: z.string().min(1),
   namaDesa: z.string().min(1),

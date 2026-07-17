@@ -295,6 +295,7 @@ export async function updateSettings(formData: FormData) {
 
   const validatedFields = SettingsFormSchema.safeParse({
     namaKepalaDesa: formData.get('namaKepalaDesa'),
+    kopSurat: formData.get('kopSurat'),
     jabatan: formData.get('jabatan'),
     kodeDesa: formData.get('kodeDesa'),
     namaDesa: formData.get('namaDesa'),

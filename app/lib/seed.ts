@@ -19,6 +19,7 @@ async function seed() {
     .values({
       id: "default",
       namaKepalaDesa: "SUYANTO",
+      kopSurat: "KEPALA DESA WONOKERTO",
       jabatan: "KEPALA DESA WONOKERTO",
       kodeDesa: "12122013",
       namaDesa: "Wonokerto",
