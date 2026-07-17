@@ -2,6 +2,11 @@ import 'server-only';
 
 const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
 
+interface SendEmailResult {
+  success: boolean;
+  error?: string;
+}
+
 async function sendEmail({
   to,
   subject,
@@ -10,19 +15,42 @@ async function sendEmail({
   to: string;
   subject: string;
   html: string;
-}) {
+}): Promise<SendEmailResult> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.warn('RESEND_API_KEY not set. Skipping email.');
-    return;
+    const msg = 'RESEND_API_KEY not set. Email skipped.';
+    console.warn(`[EMAIL] ${msg}`);
+    return { success: false, error: msg };
+  }
+
+  // Validate from email
+  if (!fromEmail || !fromEmail.includes('@')) {
+    const msg = `RESEND_FROM_EMAIL invalid: ${fromEmail}`;
+    console.error(`[EMAIL] ${msg}`);
+    return { success: false, error: msg };
   }
 
   try {
     const { Resend } = await import('resend');
     const resend = new Resend(apiKey);
-    await resend.emails.send({ from: fromEmail, to, subject, html });
+    const { data, error } = await resend.emails.send({
+      from: fromEmail,
+      to,
+      subject,
+      html,
+    });
+
+    if (error) {
+      console.error('[EMAIL] Resend API error:', error);
+      return { success: false, error: JSON.stringify(error) };
+    }
+
+    console.log(`[EMAIL] Sent to ${to}, id: ${data?.id}`);
+    return { success: true };
   } catch (error) {
-    console.error('Failed to send email:', error);
+    const errMsg = error instanceof Error ? error.message : String(error);
+    console.error('[EMAIL] Exception:', errMsg);
+    return { success: false, error: errMsg };
   }
 }
 
@@ -30,9 +58,9 @@ export async function sendNewApplicationEmail(params: {
   to: string;
   nama: string;
   type: string;
-}) {
+}): Promise<SendEmailResult> {
   const { to, nama, type } = params;
-  await sendEmail({
+  return sendEmail({
     to,
     subject: `Pengajuan Surat ${type} Baru - Desa Wonokerto`,
     html: `
@@ -42,7 +70,7 @@ export async function sendNewApplicationEmail(params: {
       <p>Silakan login ke dashboard admin untuk memproses pengajuan tersebut.</p>
       <br/>
       <p>Terima kasih,</p>
-      <p>Sistem Informasi Desa Wonokerto</p>
+      <p>SIDEWO - Sistem Informasi Desa Wonokerto</p>
     `,
   });
 }
@@ -52,7 +80,7 @@ export async function sendStatusUpdateEmail(params: {
   nama: string;
   type: string;
   status: string;
-}) {
+}): Promise<SendEmailResult> {
   const { to, nama, type, status } = params;
   let message = '';
   if (status === 'DISETUJUI') {
@@ -63,7 +91,7 @@ export async function sendStatusUpdateEmail(params: {
     message = `Pengajuan surat ${type} Anda telah <strong>SELESAI</strong>. Surat sudah siap untuk diambil di Balai Desa Wonokerto.`;
   }
 
-  await sendEmail({
+  return sendEmail({
     to,
     subject: `Update Status Pengajuan Surat ${type} - Desa Wonokerto`,
     html: `
@@ -72,7 +100,7 @@ export async function sendStatusUpdateEmail(params: {
       <p>${message}</p>
       <br/>
       <p>Terima kasih,</p>
-      <p>Sistem Informasi Desa Wonokerto</p>
+      <p>SIDEWO - Sistem Informasi Desa Wonokerto</p>
     `,
   });
 }

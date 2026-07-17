@@ -5,7 +5,7 @@ config({ path: ".env.local" });
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { applications, notifications, aduan, users, settings } from "./schema";
-import { sql } from "drizzle-orm";
+import { count } from "drizzle-orm";
 
 const dbUrl = process.env.DATABASE_URL;
 if (!dbUrl) {
@@ -19,16 +19,16 @@ async function clearData() {
   console.log("=".repeat(50));
   console.log("SIDEWO - Production Data Cleanup");
   console.log("=".repeat(50));
-  console.log("Target database:", dbUrl.replace(/:.*@/, ":****@"));
+  console.log("Target database:", dbUrl!.replace(/:.*@/, ":****@"));
   console.log("");
 
   // Cek data sebelum hapus
   console.log("📊 Data sebelum cleanup:");
-  const appsBefore = await db.select({ count: sql<count>`count(*)` }).from(applications);
-  const notifBefore = await db.select({ count: sql<count>`count(*)` }).from(notifications);
-  const aduanBefore = await db.select({ count: sql<count>`count(*)` }).from(aduan);
-  const usersBefore = await db.select({ count: sql<count>`count(*)` }).from(users);
-  const settingsBefore = await db.select({ count: sql<count>`count(*)` }).from(settings);
+  const appsBefore = await db.select({ count: count() }).from(applications);
+  const notifBefore = await db.select({ count: count() }).from(notifications);
+  const aduanBefore = await db.select({ count: count() }).from(aduan);
+  const usersBefore = await db.select({ count: count() }).from(users);
+  const settingsBefore = await db.select({ count: count() }).from(settings);
 
   console.log(`   Applications : ${appsBefore[0]?.count ?? 0}`);
   console.log(`   Notifications: ${notifBefore[0]?.count ?? 0}`);
@@ -75,11 +75,11 @@ async function clearData() {
 
   // Verifikasi data setelah hapus
   console.log("📊 Data setelah cleanup:");
-  const appsAfter = await db.select({ count: sql<count>`count(*)` }).from(applications);
-  const notifAfter = await db.select({ count: sql<count>`count(*)` }).from(notifications);
-  const aduanAfter = await db.select({ count: sql<count>`count(*)` }).from(aduan);
-  const usersAfter = await db.select({ count: sql<count>`count(*)` }).from(users);
-  const settingsAfter = await db.select({ count: sql<count>`count(*)` }).from(settings);
+  const appsAfter = await db.select({ count: count() }).from(applications);
+  const notifAfter = await db.select({ count: count() }).from(notifications);
+  const aduanAfter = await db.select({ count: count() }).from(aduan);
+  const usersAfter = await db.select({ count: count() }).from(users);
+  const settingsAfter = await db.select({ count: count() }).from(settings);
 
   console.log(`   Applications : ${appsAfter[0]?.count ?? 0}`);
   console.log(`   Notifications: ${notifAfter[0]?.count ?? 0}`);
