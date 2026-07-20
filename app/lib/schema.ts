@@ -86,6 +86,25 @@ export const aduan = pgTable("aduan", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  token: varchar("token", { length: 255 }).notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const videos = pgTable("videos", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  youtubeId: varchar("youtube_id", { length: 50 }).notNull(),
+  sortOrder: varchar("sort_order", { length: 10 }).notNull().default("0"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const settings = pgTable("settings", {
   id: varchar("id", { length: 50 }).primaryKey().default("default"),
   namaKepalaDesa: varchar("nama_kepala_desa", { length: 255 }).notNull().default("SUYANTO"),

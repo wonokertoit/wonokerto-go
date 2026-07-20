@@ -85,6 +85,12 @@ export default function LoginPage() {
             </motion.button>
           </form>
 
+          <div className="flex items-center justify-between mt-4">
+            <Link href="/lupa-password" className="text-sm text-[#a8a29e] hover:text-[#57534e] transition-colors">
+              Lupa password?
+            </Link>
+          </div>
+
           <p className="text-center mt-6 text-sm text-[#a8a29e]">
             Belum punya akun?{' '}
             <Link href="/register" className="text-[#57534e] font-medium hover:underline">

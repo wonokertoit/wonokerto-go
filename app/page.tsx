@@ -5,10 +5,11 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import {
   FileText, Shield, Clock, FileCheck, ArrowRight, Building2, MapPin,
-  Users, Mail, Phone, ChevronRight, Sparkles, TrendingUp
+  Users, Mail, Phone, ChevronRight, Sparkles, TrendingUp, Play
 } from "lucide-react";
 import GoogleMap from "./components/GoogleMap";
 import CardNav from "./components/CardNav";
+import VideoSection from "./components/VideoSection";
 
 const navItems = [
   {
@@ -365,6 +366,10 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
+      <VideoSection />
+
+      <WaveDivider fill="#fafaf9" />
 
       {/* Map Section */}
       <section id="lokasi" className="py-20 bg-white">

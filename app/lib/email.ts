@@ -7,7 +7,7 @@ interface SendEmailResult {
   error?: string;
 }
 
-async function sendEmail({
+export async function sendEmail({
   to,
   subject,
   html,

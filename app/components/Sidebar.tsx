@@ -13,6 +13,9 @@ import {
   X,
   FileCheck,
   FileClock,
+  Users,
+  KeyRound,
+  Video,
 } from "lucide-react";
 import { logout } from "@/app/actions/auth";
 
@@ -25,11 +28,14 @@ const wargaMenu = [
   { href: "/pengajuan/sku", label: "Surat Keterangan Usaha", icon: FileText },
   { href: "/pengajuan/skck", label: "Surat Pengantar SKCK", icon: FileCheck },
   { href: "/riwayat", label: "Riwayat Pengajuan", icon: History },
+  { href: "/profil", label: "Ubah Password", icon: KeyRound },
 ];
 
 const adminMenu = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/pengajuan", label: "Daftar Pengajuan", icon: FileClock },
+  { href: "/admin/akun", label: "Manajemen Akun", icon: Users },
+  { href: "/admin/video", label: "Video Tutorial", icon: Video },
   { href: "/admin/settings", label: "Pengaturan", icon: Settings },
 ];
 

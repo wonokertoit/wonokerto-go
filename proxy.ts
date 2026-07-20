@@ -9,7 +9,7 @@ export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Public routes
-  const publicRoutes = ['/', '/login', '/register'];
+  const publicRoutes = ['/', '/login', '/register', '/lupa-password', '/reset-password'];
   if (publicRoutes.includes(pathname)) {
     if (session?.userId) {
       if (session.role === 'admin') {

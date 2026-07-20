@@ -60,6 +60,56 @@ export const SettingsFormSchema = z.object({
   kodePos: z.string().min(1),
 });
 
+export const ForgotPasswordSchema = z.object({
+  email: z.string().email({ message: "Masukkan email yang valid." }).trim(),
+});
+
+export const ResetPasswordSchema = z.object({
+  token: z.string().min(1, { message: "Token wajib diisi." }).trim(),
+  password: z.string().min(6, { message: "Password minimal 6 karakter." }).trim(),
+  confirmPassword: z.string().min(1, { message: "Konfirmasi password wajib diisi." }).trim(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Password dan konfirmasi password tidak cocok.",
+  path: ["confirmPassword"],
+});
+
+export const CreateUserSchema = z.object({
+  email: z.string().email({ message: "Masukkan email yang valid." }).trim(),
+  password: z.string().min(6, { message: "Password minimal 6 karakter." }).trim(),
+  role: z.enum(["warga", "admin"], { message: "Role tidak valid." }),
+});
+
+export const UpdateUserSchema = z.object({
+  id: z.string().min(1),
+  email: z.string().email({ message: "Masukkan email yang valid." }).trim(),
+  role: z.enum(["warga", "admin"], { message: "Role tidak valid." }),
+});
+
+export const ResetUserPasswordSchema = z.object({
+  id: z.string().min(1),
+  newPassword: z.string().min(6, { message: "Password minimal 6 karakter." }).trim(),
+  confirmPassword: z.string().min(1, { message: "Konfirmasi password wajib diisi." }).trim(),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Password dan konfirmasi password tidak cocok.",
+  path: ["confirmPassword"],
+});
+
+export const UpdateMyPasswordSchema = z.object({
+  currentPassword: z.string().min(1, { message: "Password saat ini wajib diisi." }).trim(),
+  newPassword: z.string().min(6, { message: "Password minimal 6 karakter." }).trim(),
+  confirmPassword: z.string().min(1, { message: "Konfirmasi password wajib diisi." }).trim(),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Password baru dan konfirmasi tidak cocok.",
+  path: ["confirmPassword"],
+});
+
+export const VideoSchema = z.object({
+  title: z.string().min(1, { message: "Judul video wajib diisi." }).trim(),
+  description: z.string().optional(),
+  youtubeId: z.string().min(1, { message: "ID YouTube wajib diisi." }).trim(),
+  sortOrder: z.string().min(1).default("0"),
+});
+
 export type FormState =
   | {
       errors?: Record<string, string[]>;
