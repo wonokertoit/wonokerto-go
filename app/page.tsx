@@ -530,6 +530,12 @@ export default function HomePage() {
               <span>Dibuat untuk masyarakat Desa Wonokerto</span>
             </div>
           </div>
+
+          <div className="mt-4 pt-4 border-t border-[#e7e5e4] text-center">
+            <p className="text-[11px] text-[#a8a29e]">
+              Dibuat oleh <strong className="text-[#78716c]">KKN R UNDIP Tim 2 Desa Wonokerto</strong>
+            </p>
+          </div>
         </div>
       </footer>
     </div>
