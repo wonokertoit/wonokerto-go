@@ -110,6 +110,11 @@ export const VideoSchema = z.object({
   sortOrder: z.string().min(1).default("0"),
 });
 
+export const FeedbackSchema = z.object({
+  rating: z.coerce.number().min(1, { message: "Rating minimal 1." }).max(5, { message: "Rating maksimal 5." }),
+  feedback: z.string().min(1, { message: "Saran dan kritik wajib diisi." }).trim(),
+});
+
 export type FormState =
   | {
       errors?: Record<string, string[]>;

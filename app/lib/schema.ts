@@ -5,6 +5,7 @@ import {
   timestamp,
   text,
   date,
+  integer,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -58,6 +59,11 @@ export const applications = pgTable("applications", {
   tanggalBerlakuMulai: timestamp("tanggal_berlaku_mulai"),
   tanggalBerlakuSampai: timestamp("tanggal_berlaku_sampai"),
   tanggalSelesai: timestamp("tanggal_selesai"),
+
+  // Feedback setelah selesai
+  rating: integer("rating"),
+  feedback: text("feedback"),
+  feedbackCreatedAt: timestamp("feedback_created_at"),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),

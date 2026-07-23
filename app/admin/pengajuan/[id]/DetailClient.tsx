@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { FileText, FileCheck, Clock, XCircle, ArrowLeft, Users } from "lucide-react";
+import { FileText, FileCheck, Clock, XCircle, ArrowLeft, Users, Star, MessageSquare } from "lucide-react";
 import AdminActions from "./AdminActions";
 
 interface Application {
@@ -33,6 +33,9 @@ interface Application {
   provinsi: string;
   nik: string;
   kk: string;
+  rating: number | null;
+  feedback: string | null;
+  feedbackCreatedAt: Date | null;
 }
 
 const statusConfig: Record<string, { color: string; bg: string; border: string; icon: typeof FileText; label: string }> = {
@@ -155,6 +158,43 @@ export default function DetailClient({ app }: { app: Application }) {
             <div className="bg-[#fef2f2] rounded-lg p-4 border border-[#fecaca]">
               <p className="text-xs text-[#dc2626] mb-1">Alasan Penolakan</p>
               <p className="text-sm font-medium text-[#dc2626]">{app.alasanPenolakan}</p>
+            </div>
+          )}
+
+          {/* Feedback Warga */}
+          {app.status === 'SELESAI' && (
+            <div className="border-t border-[#e7e5e4] pt-5">
+              <h3 className="text-sm font-semibold text-[#1c1917] mb-3 flex items-center gap-2">
+                <MessageSquare size={16} className="text-[#a8a29e]" /> Feedback Warga
+              </h3>
+              {app.feedback ? (
+                <div className="bg-[#fafaf9] rounded-lg p-4 border border-[#e7e5e4]">
+                  <div className="flex items-center gap-1 mb-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        size={18}
+                        className={
+                          star <= (app.rating ?? 0)
+                            ? "fill-[#78716c] text-[#78716c]"
+                            : "text-[#d6d3d1]"
+                        }
+                      />
+                    ))}
+                    <span className="text-sm font-medium text-[#57534e] ml-1">{app.rating}/5</span>
+                  </div>
+                  <p className="text-sm text-[#1c1917] leading-relaxed">{app.feedback}</p>
+                  {app.feedbackCreatedAt && (
+                    <p className="text-xs text-[#a8a29e] mt-2">
+                      Dikirim pada {new Date(app.feedbackCreatedAt).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="bg-[#fafaf9] rounded-lg p-4 border border-[#e7e5e4] text-sm text-[#a8a29e]">
+                  Belum ada feedback dari warga untuk pengajuan ini.
+                </div>
+              )}
             </div>
           )}
         </div>

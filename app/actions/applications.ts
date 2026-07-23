@@ -2,7 +2,7 @@
 
 import { db } from '@/app/lib/db';
 import { applications, settings, users, notifications } from '@/app/lib/schema';
-import { ApplicationFormSchema, SettingsFormSchema, FormState } from '@/app/lib/definitions';
+import { ApplicationFormSchema, SettingsFormSchema, FeedbackSchema, FormState } from '@/app/lib/definitions';
 import { verifySession } from '@/app/lib/session';
 import { eq, desc, and } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
@@ -241,6 +241,39 @@ export async function completeApplication(id: string) {
     }
   }
 
+  revalidatePath('/admin/pengajuan');
+  revalidatePath(`/admin/pengajuan/${id}`);
+  return { success: true };
+}
+
+export async function submitFeedback(id: string, rating: number, feedback: string) {
+  const session = await verifySession();
+  if (!session || session.role !== 'warga') return { message: 'Unauthorized.' };
+
+  const validatedFields = FeedbackSchema.safeParse({ rating, feedback });
+  if (!validatedFields.success) {
+    return { errors: validatedFields.error.flatten().fieldErrors };
+  }
+
+  const app = await db.select().from(applications).where(eq(applications.id, id)).limit(1);
+  const appData = app[0];
+  if (!appData) return { message: 'Pengajuan tidak ditemukan.' };
+  if (appData.userId !== session.userId) return { message: 'Unauthorized.' };
+  if (appData.status !== 'SELESAI') return { message: 'Hanya pengajuan selesai yang dapat diberi feedback.' };
+  if (appData.feedback) return { message: 'Anda sudah pernah memberi feedback untuk pengajuan ini.' };
+
+  await db
+    .update(applications)
+    .set({
+      rating: validatedFields.data.rating,
+      feedback: validatedFields.data.feedback,
+      feedbackCreatedAt: new Date(),
+      updatedAt: new Date(),
+    })
+    .where(eq(applications.id, id));
+
+  revalidatePath('/riwayat');
+  revalidatePath(`/riwayat/${id}`);
   revalidatePath('/admin/pengajuan');
   revalidatePath(`/admin/pengajuan/${id}`);
   return { success: true };
